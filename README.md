@@ -8,6 +8,8 @@
 
 **Laungauge:** Shell/Bash
 
+**Install**: place rbin in /usr/bin to use as executble.
+
  **Description:** 
 	
     RBIN is a software which acts as a RECYCLEBIN" to delete and restore the 
