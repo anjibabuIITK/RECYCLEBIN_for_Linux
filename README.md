@@ -1,7 +1,5 @@
-# -----------------------------#
-#    <========= RBIN =======>
+#    <================= RBIN =================>
 #     Recyclebin for Linux
-# -----------------------------#
 
  **Authour:**
  
@@ -31,4 +29,7 @@
     /home/user/recyclebin/.cache   ---> Contains the information about deleted files 
 	                                    		(date of deletion & original location)
 
-# ---------------------------------------------
+# <==================================================>
+**Cheers!**
+**Anji Babu Kapakayala**
+**17/03/2021**
