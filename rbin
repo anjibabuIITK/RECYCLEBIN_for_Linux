@@ -23,6 +23,7 @@
 #       rbin -e/--emptybin   ---> Will empty the recyclebin
 #       rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
 #       rbin -h/--help       ---> Prints the information about rbin.
+#       rbin -f/--force      ---> Deletes the given file perminantly
 #
 #
 # Directories:
@@ -44,36 +45,67 @@ if [ ! -d "$bin" ]; then
  touch $cache
 fi
 #----------------------------------------------------------------------------#
+# Function to move files to recyclebin
 function delete() {
-echo "This is function deletes the files"
-# Update cache for the file
-UpdateCache $1
-# move to $bin
-mv $1 $bin
-}
-#----------------------------------------------------------------------------#
-function EmptyBin() {
-read -p "Are you sure want to empty the Recyclebin [y/n] ? : " option
-if [[ "$option" == "y" ]];then 
-rm -rf *
-rm $cache
-echo " Recyclebin is empty."
+if [[ -f "$1" ]]; then
+   UpdateCache $1
+   mv $1 $bin
 else
-echo " Recyclebin is not empty."
+   echo "$1 not found."
 fi
 }
 #----------------------------------------------------------------------------#
-function Restore() {
-echo "This is function Restores the deleted files"
-file=$1
-# get original path of given file
-original_path=`grep " $file:" $cache|cut -d ":" -f 2`
-# Move back file from recyclebin to original path
-mv $bin/$file $original_path/
-if [ "$?" == "0" ];then
-sed -i "/$1:/d" $cache
+# Function to delete the files perminantly.
+function Remove_Perminant() {
+if [[ -f "$1" ]]; then
+  current_dir=`pwd`
+#--->
+  if [[ "$current_dir" == "$bin" ]];then
+  rm -rf $1
+  sed -i "/$1:/d" $cache
+  else
+  rm -rf $1
+  fi
+#<---
+echo "$1 had be deleted perminantly." 
+else
+   echo "$1 not found."
 fi
-echo "$file is restored back to $original_path"
+}
+#----------------------------------------------------------------------------#
+# Function to empty the recyclebin
+function EmptyBin() {
+  current_dir=`pwd`
+#--->
+ if [[ "$current_dir" == "$bin" ]];then
+    read -p "Are you sure want to empty the Recyclebin [y/n] ? : " option
+    if [[ "$option" == "y" ]];then 
+    rm -rf *
+    rm $cache
+    echo " Recyclebin is empty."
+    else
+    echo " Recyclebin is not empty."
+    fi
+ else
+    echo " The current direcory is not Recyclebin."
+ fi
+}
+#----------------------------------------------------------------------------#
+# Function to restore the deleted files from recyclebin.
+function Restore() {
+  current_dir=`pwd`
+#--->
+if [[ "$current_dir" == "$bin" ]];then
+   file=$1
+   original_path=`grep " $file:" $cache|cut -d ":" -f 2`
+   mv $bin/$file $original_path/
+   if [ "$?" == "0" ];then
+   sed -i "/$1:/d" $cache
+   fi
+   echo "$file is restored back to $original_path"
+else
+   echo " The current direcory is not Recyclebin."
+fi
 }
 #----------------------------------------------------------------------------#
 function SetAutoClean() {
@@ -119,6 +151,7 @@ cat <<EOF
        rbin -e/--emptybin   ---> Will empty the recyclebin
        rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
        rbin -h/--help       ---> Prints the information about rbin.
+       rbin -f/--force      ---> Deletes the given file perminantly
 
 
  Directories:
@@ -154,6 +187,8 @@ if [[ "$1" != "" ]];then
        ;;
       --SetAutoclean|--autoclean|--SAC)
          echo "Set the Auto clean settings." ;;
+      -f|--force)
+        Remove_Perminant $1;;
       *)
        delete $1
        ;;
