@@ -53,8 +53,14 @@ mv $1 $bin
 }
 #----------------------------------------------------------------------------#
 function EmptyBin() {
-echo "This is function Empty the bin"
+read -p "Are you sure want to empty the Recyclebin [y/n] ? : " option
+if [[ "$option" == "y" ]];then 
 rm -rf *
+rm $cache
+echo " Recyclebin is empty."
+else
+echo " Recyclebin is not empty."
+fi
 }
 #----------------------------------------------------------------------------#
 function Restore() {
@@ -64,9 +70,9 @@ file=$1
 original_path=`grep " $file:" $cache|cut -d ":" -f 2`
 # Move back file from recyclebin to original path
 mv $bin/$file $original_path/
-#if [ "$?" == 0 ];then
+if [ "$?" == "0" ];then
 sed -i "/$1:/d" $cache
-#fi
+fi
 echo "$file is restored back to $original_path"
 }
 #----------------------------------------------------------------------------#
@@ -140,7 +146,8 @@ if [[ "$1" != "" ]];then
        delete $2
        ;;
       -e|--empty|--emptybin)
-         echo "Empty the Recyclebin." ;;
+#         echo "Empty the Recyclebin." ;;
+         EmptyBin ;;
       -r|--restore|--res)
          echo "Restore the file/directory"
        Restore $2

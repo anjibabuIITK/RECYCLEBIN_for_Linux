@@ -1,0 +1,7 @@
+1. check for the given file, print error if it doesn't exist
+2. Implement for the * , when * provided as argument, loop over all files and save cache befor moving to bin.
+3. Implement for more arguments (>1)
+4. Implement for the filename* (ended with *), first lists the files which contains filename and move all of them.
+5. Same rules for restore
+6. Implement auto deletion after 30 days of deletion of file.
+7. Implement option to setup Autodeletion feature (yes/no) default is no.
