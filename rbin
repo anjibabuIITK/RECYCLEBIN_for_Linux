@@ -1,0 +1,192 @@
+
+#----------------------------------------------------------------------------#
+#    <========================== RBIN =============================>         #
+#----------------------------------------------------------------------------#
+#
+# Authour: Anji Babu Kapakayala
+#          IIT Kanpur, India.
+#          (anjibabu480@gmail.com)
+#
+# Laungauge: Shell/bash
+#
+# Description: 
+#	
+#	RBIN is a software which acts as a RECYCLEBIN" to delete and restore the files in Linux.
+#       Restores the selected file/directory to its original location. And deletes the files 
+#       perminantly whose deletion date is more than 30 days.  
+#
+# Features:
+#    
+#       rbin                 ---> main excutable
+#       rbin -d/--del        ---> Deletes the files or Directories
+#       rbin -r/--restore    ---> Restores the given files.
+#       rbin -e/--emptybin   ---> Will empty the recyclebin
+#       rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
+#       rbin -h/--help       ---> Prints the information about rbin.
+#
+#
+# Directories:
+#       
+#       recyclebin          ---> Place, where stores all the deleted files
+#       recyclebin/.paths   ---> Contains the information about deleted files (date of deletion & path)
+#
+#
+#!/bin/bash
+#----------------------------------------------------------------------------#
+bin="$HOME/recyclebin"
+cache="$HOME/recyclebin/.cache"
+# if $bin doesn't exist, create
+if [ ! -d "$bin" ]; then
+# echo "$bin exist."
+#else
+ echo "$bin Created."
+ mkdir -p $bin
+ touch $cache
+fi
+#----------------------------------------------------------------------------#
+function delete() {
+echo "This is function deletes the files"
+# Update cache for the file
+UpdateCache $1
+# move to $bin
+mv $1 $bin
+}
+#----------------------------------------------------------------------------#
+function EmptyBin() {
+echo "This is function Empty the bin"
+rm -rf *
+}
+#----------------------------------------------------------------------------#
+function Restore() {
+echo "This is function Restores the deleted files"
+file=$1
+# get original path of given file
+original_path=`grep " $file:" $cache|cut -d ":" -f 2`
+# Move back file from recyclebin to original path
+mv $bin/$file $original_path/
+#if [ "$?" == 0 ];then
+sed -i "/$1:/d" $cache
+#fi
+echo "$file is restored back to $original_path"
+}
+#----------------------------------------------------------------------------#
+function SetAutoClean() {
+echo "This is function Sets the Auto clean function."
+
+}
+#----------------------------------------------------------------------------#
+# Function to update Cache for given file. It stores the information about file
+function UpdateCache() {
+file=$1
+path=`pwd`
+date=`date +%s -r "$file"`
+cat >>$cache<<EOF
+ $1: $path:$date
+EOF
+
+}
+#----------------------------------------------------------------------------#
+function print_help() {
+cat <<EOF
+-----------------------------------------------------------------------------
+
+    <========================== RBIN =============================>
+
+-----------------------------------------------------------------------------
+
+ Authour: Anji Babu Kapakayala
+	 IIT Kanpur, India.
+
+ Laungauge: Shell/Bash
+
+ Description: 
+	
+       RBIN is a software which acts as a RECYCLEBIN" to delete and restore the 
+       files in Linux. Restores the selected file/directory to its original location.
+       And deletes the files perminantly whose deletion date is more than 30 days.  
+
+ Features:
+    
+       rbin                 ---> main excutable and deletes given files
+       rbin -d/--del        ---> Deletes the files or Directories
+       rbin -r/--restore    ---> Restores the given files.
+       rbin -e/--emptybin   ---> Will empty the recyclebin
+       rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
+       rbin -h/--help       ---> Prints the information about rbin.
+
+
+ Directories:
+       
+       recyclebin          ---> Place to store the deleted files
+       recyclebin/.cache   ---> Contains the information about deleted files 
+				(date of deletion & original location)
+
+
+
+-----------------------------------------------------------------------------
+EOF
+}
+
+#----------------------------------------------------------------------------#
+#    <========================== MAIN CODE =============================>
+#----------------------------------------------------------------------------#
+
+if [[ "$1" != "" ]];then
+
+  case "$1" in
+     -h|--help) print_help;;
+     -d|--del|--delete)
+         echo "Deletes the given file/directory"
+       delete $2
+       ;;
+      -e|--empty|--emptybin)
+         echo "Empty the Recyclebin." ;;
+      -r|--restore|--res)
+         echo "Restore the file/directory"
+       Restore $2
+       ;;
+      --SetAutoclean|--autoclean|--SAC)
+         echo "Set the Auto clean settings." ;;
+      *)
+       delete $1
+       ;;
+#     echo "Invalid Argument.";;
+      
+  esac
+
+else
+     echo " Argument epected.!"
+     echo " See rbin --help "
+fi
+#----------------------------------------------------------------------------#
+#          <============ ANJI BABU KAPAKAYALA ============>
+#----------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
