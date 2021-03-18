@@ -8,7 +8,9 @@
 
 **Laungauge:** Shell/Bash
 
-**Install**: place rbin in /usr/bin to use as executble.
+**Install**:    
+
+    Place rbin in /usr/bin to be used as executble.
 
  **Description:** 
 	
