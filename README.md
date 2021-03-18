@@ -1,5 +1,5 @@
 #    <============ RBIN ===========>
-#     Recyclebin for Linux
+#        Recyclebin for Linux
 
  **Authour:**
  
