@@ -48,7 +48,7 @@ fi
 #----------------------------------------------------------------------------#
 # Function to move files to recyclebin
 function delete() {
-if [[ -f "$1" ]]; then
+if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
    UpdateCache $1
    mv $1 $bin
 else
@@ -58,7 +58,7 @@ fi
 #----------------------------------------------------------------------------#
 # Function to delete the files perminantly.
 function Remove_Perminant() {
-if [[ -f "$1" ]]; then
+if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
   current_dir=`pwd`
 #--->
   if [[ "$current_dir" == "$bin" ]];then
@@ -95,15 +95,20 @@ function EmptyBin() {
 # Function to restore the deleted files from recyclebin.
 function Restore() {
   current_dir=`pwd`
-#--->
-if [[ "$current_dir" == "$bin" ]];then
    file=$1
    original_path=`grep " $file:" $cache|cut -d ":" -f 2`
-   mv $bin/$file $original_path
-   if [ "$?" == "0" ];then
-   sed -i "/$1:/d" $cache
+#--->
+if [[ "$current_dir" == "$bin" ]];then
+
+   if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
+      mv $bin/$file $original_path
+      if [ "$?" == "0" ];then
+      sed -i "/$1:/d" $cache
+      fi
+      echo "$file is restored ------>  $original_path"
+   else
+   echo "$1 not found."
    fi
-   echo "$file is restored back to $original_path"
 else
    echo " The current direcory is not Recyclebin."
 fi
@@ -166,9 +171,7 @@ EOF
 }
 
 #----------------------------------------------------------------------------#
-#    <========================== MAIN CODE =============================>
-#----------------------------------------------------------------------------#
-
+function perform_task() {
 if [[ "$1" != "" ]];then
 
   case "$1" in
@@ -187,7 +190,7 @@ if [[ "$1" != "" ]];then
       --SetAutoclean|--autoclean|--SAC)
          echo "Set the Auto clean settings." ;;
       -f|--force)
-        Remove_Perminant $1;;
+        Remove_Perminant $2;;
       *)
        delete $1
        ;;
@@ -199,6 +202,31 @@ else
      echo " Argument epected.!"
      echo " See rbin --help "
 fi
+}
+#----------------------------------------------------------------------------#
+#    <========================== MAIN CODE =============================>
+#----------------------------------------------------------------------------#
+perform_task $1 $2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #----------------------------------------------------------------------------#
 #          <============ ANJI BABU KAPAKAYALA ============>
 #----------------------------------------------------------------------------#
