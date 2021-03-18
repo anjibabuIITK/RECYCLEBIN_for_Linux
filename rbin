@@ -35,6 +35,15 @@
 #
 #!/bin/bash
 #----------------------------------------------------------------------------#
+# Defining text colors
+red=`tput setaf 1`
+grn=`tput setaf 2`
+ylw=`tput setaf 3`
+blu=`tput setaf 4`
+pur=`tput setaf 5`
+rst=`tput sgr0`
+bold=`tput bold`
+#----------------------------------------------------------------------------#
 bin="$HOME/recyclebin"
 cache="$HOME/recyclebin/.cache"
 # if $bin doesn't exist, create
@@ -49,11 +58,15 @@ fi
 # Function to move files to recyclebin
 function delete() {
 if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
+   if [[ ( -f "$bin/$1" ) || ( -d "$bin/$1" ) ]]; then
+   mv $bin/$1 $bin/$1.old
+   sed -i "s/$1:/$1.old:/g" $cache
+   fi
    UpdateCache $1
-#   mv $1 $bin
-   mv -f $1 $bin
+   mv  $1 $bin
+
 else
-   echo "$1 not found."
+   echo "rbin: ---> $1 not found."
 fi
 }
 #----------------------------------------------------------------------------#
@@ -66,12 +79,15 @@ if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
   rm -rf $1
   sed -i "/$1:/d" $cache
   else
-  rm -rf $1
+#    read -p "This action will perminantly remove the files. Press 'y' to continue [y/n] ? : " option
+#    if [[ ( "$option" == "y" ) || ( "$option" == "yes" ) ]];then 
+       rm -rf $1
+#    fi
   fi
 #<---
-echo "$1 had be deleted perminantly." 
+echo "$1 has deleted perminantly." 
 else
-   echo "$1 not found."
+   echo "rbin: ---> $1 not found."
 fi
 }
 #----------------------------------------------------------------------------#
@@ -106,7 +122,7 @@ if [[ "$current_dir" == "$bin" ]];then
       if [ "$?" == "0" ];then
       sed -i "/$1:/d" $cache
       fi
-      echo "$file is restored ------>  $original_path"
+      echo "rbin: [restored] $file ------>  $original_path"
    else
    echo "$1 not found."
    fi
@@ -194,7 +210,6 @@ if [[ "$1" != "" ]];then
          ;;
      esac
    else
-     echo "$1 came here."
      case "$1" in
         -h|--help) print_help;;
         -e|--empty|--emptybin)EmptyBin ;;
@@ -230,15 +245,15 @@ fi
 narg=$#
 arg=$*
 
-echo "$narg"
-echo "$arg"
+#echo "$narg"
+#echo "$arg"
 
 if [[ "$1" != "" ]];then
 #---> Arg
   if [[ "$narg" != "1" ]];then
      for i in $arg;do
         if [[ "$i" != "$1" ]];then
-           echo "$i"
+#           echo "$i"
            perform_task $1 $i
         else
            perform_task $1 
@@ -246,7 +261,6 @@ if [[ "$1" != "" ]];then
      done
   else
      perform_task $1 
-#    echo "$1 is first arg"
   fi
 #<--- Arg
 else
