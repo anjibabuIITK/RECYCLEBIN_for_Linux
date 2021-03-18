@@ -14,10 +14,10 @@
 
  **Description:** 
 	
-    RBIN is a software which acts as a RECYCLEBIN" to delete and restore the 
-    files in Linux. Restores the file/directory to its original location.And
-    gives flexibility to user to ON autodeletion feature which deletes the 
-    files perminantly for those deletion date is more than 30 days.  
+    RBIN is a software which acts as a RECYCLEBIN" to delete and restore the files in Linux.
+    Restores the file/directory to its original location.And gives flexibility to user to ON
+    autodeletion feature which deletes the files perminantly for those deletion date is more 
+    than 30 days.  
 
  **Features:**
     
