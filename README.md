@@ -36,13 +36,15 @@
 	                                    		(date of deletion & original location)
  **Examples:**
  
-    rbin *    : Deletes all files from current directory.
-    rbin -r * : Restores all files from recyclebin.
-    rbin -f * : Removes all files perminantly from current directory.
-    rbin file1 : Deletes the file1
-    rbin -r file1: Restore the file1
-    rbin -e   : Makes recyclebin empty.
-    rbin anji_* : Deletes all files starts with anji_
+    rbin *               ---> Deletes all files from current directory.
+    rbin -r *            ---> Restores all files from recyclebin.
+    rbin -f *            ---> Removes all files perminantly from current directory.
+    rbin file1           ---> Deletes the file1
+    rbin -r file1        ---> Restore the file1
+    rbin -e              ---> Makes recyclebin empty.
+    rbin anji_*          ---> Deletes all files starts with anji_
+    
+    Works well with wildcards like, *, file_* 
     
 # <==============================>
 **Cheers!**
