@@ -182,7 +182,19 @@ cat <<EOF
     recyclebin/.cache   ---> Contains the information about deleted files 
 				(date of deletion & original location)
 
+ Examples:
 
+    rbin *              ---> Deletes all files from current directory.
+    rbin -r *           ---> Restores all files from recyclebin.
+    rbin -f *           ---> Removes all files perminantly from current directory.
+    rbin file1          ---> Deletes the file1
+    rbin -r file1       ---> Restore the file1
+    rbin -e             ---> Makes recyclebin empty.
+    rbin anji_*         ---> Deletes all files starts with anji_
+    rbin file1 file2 dir1 ---> Deletes file1 file2 dir1 
+
+ Cheers!
+ Anji Babu
 -----------------------------------------------------------------------------
 EOF
 }
@@ -216,17 +228,17 @@ if [[ "$1" != "" ]];then
         --SetAutoclean|--autoclean|--SAC)
          echo "Set the Auto clean settings.Yet to implement." ;;
         -d|--del|--delete)
-          if [[ "$narg" < "2" ]];then
+          if [[ "$narg" -lt "2" ]];then
              echo "Expected Argument with -d tag." 
           fi
           ;;
         -r|--restore|--res)
-          if [[ "$narg" < "2" ]];then
+          if [[ $narg -lt 2 ]];then
             echo "Expected Argument with -r tag." 
           fi
           ;;
         -f|--force)
-          if [[ "$narg" < "2" ]];then
+          if [[ "$narg" -lt "2" ]];then
             echo "Expected Argument with -f tag." 
           fi
           ;;
