@@ -46,13 +46,18 @@ bold=`tput bold`
 #----------------------------------------------------------------------------#
 bin="$HOME/recyclebin"
 cache="$HOME/recyclebin/.cache"
+rbinrc="$HOME/.rbinrc"
 # if $bin doesn't exist, create
 if [ ! -d "$bin" ]; then
 # echo "$bin exist."
 #else
  echo "$bin Created."
  mkdir -p $bin
- touch $cache
+ touch $cache $rbinrc
+ cat >>$rbinrc<<EOF
+ AUTO_CLEAN=OFF
+ EXPIRY_DAYS=30
+EOF
 fi
 #----------------------------------------------------------------------------#
 # Function to move files to recyclebin
@@ -131,11 +136,6 @@ else
 fi
 }
 #----------------------------------------------------------------------------#
-function SetAutoClean() {
-echo "This is function Sets the Auto clean function."
-
-}
-#----------------------------------------------------------------------------#
 # Function to update Cache for given file. It stores the information about file
 function UpdateCache() {
 file=$1
@@ -145,6 +145,133 @@ cat >>$cache<<EOF
  $1: $path:$date
 EOF
 
+}
+#----------------------------------------------------------------------------#
+# Function to get details from $rbinrc
+function Read_rbinrc() {
+if [[ ( -f "$rbinrc" ) ]]; then
+switch=`grep "AUTO_CLEAN" $rbinrc|cut -d "=" -f2`
+expiry=`grep "EXPIRY_DAYS" $rbinrc|cut -d "=" -f2`
+else
+ touch $rbinrc
+ cat >>$rbinrc<<EOF
+ AUTO_CLEAN=OFF
+ EXPIRY_DAYS=30
+EOF
+switch="OFF"
+fi
+#echo "SWITCH: $switch"
+#echo "EXPIRY: $expiry"
+}
+#----------------------------------------------------------------------------#
+#function to set Autoclean option
+function set_Autoclean() {
+Read_rbinrc
+ if [[ "$switch" == "OFF" ]];then
+#---> when off
+echo " Autoclean status is OFF."
+echo ""
+read -p "Set Autoclean [ON/OFF] :" option
+   if [[ "$option" == "ON" ]];then
+     switch="ON"
+     Set_Crontab
+   else
+     switch="OFF"
+   fi
+read -p "Set Expiry Days for Auto Deletion [in Days] :" ndays
+   if [[ "$ndays" != "" ]];then
+
+cat >$rbinrc<<EOF
+ AUTO_CLEAN=$switch
+ EXPIRY_DAYS=$ndays
+EOF
+else
+     ndays=30
+cat >$rbinrc<<EOF
+ AUTO_CLEAN=$switch
+ EXPIRY_DAYS=$ndays
+EOF
+   fi
+#<---when off
+else
+#---> when on
+echo " Autoclean status is ON."
+echo ""
+read -p "Deactivate Autoclean [ON/OFF] :" option
+   if [[ "$option" == "OFF" ]];then
+     switch="OFF"
+     Remove_Crontab
+   else
+     switch="ON"
+   fi
+
+cat >$rbinrc<<EOF
+ AUTO_CLEAN=$switch
+ EXPIRY_DAYS=$ndays
+EOF
+#<--- When on
+fi
+}
+#----------------------------------------------------------------------------#
+# This function needs to be removed
+#function to set Autoclean option
+function set_Autoclean_2() {
+echo " Setting Autoclean Option:"
+echo ""
+     switch=$1
+#if ON,set crontab
+     ndays=$2
+#
+ echo " AUTO_CLEAN=$switch"
+ echo " EXPIRY_DAYS=$ndays"
+#
+cat >$rbinrc<<EOF
+ AUTO_CLEAN=$switch
+ EXPIRY_DAYS=$ndays
+EOF
+}
+#----------------------------------------------------------------------------#
+#function to set crontab
+function Set_Crontab() {
+#write out current crontab
+crontab -l > mycron
+#echo new cron into cron file
+echo "0 0 * * * rbin --autoclean" >> mycron
+#install new cron file
+crontab mycron
+rm mycron
+}
+#----------------------------------------------------------------------------#
+# Function to remove crontab
+function Remove_Crontab() {
+crontab -l > mycron
+#echo new cron into cron file
+a=`grep "rbin --autoclean" mycron`
+if [ "$?" == "0" ];then
+sed -i "/rbin --autoclean/d" mycron
+#install new cron file
+crontab mycron
+rm mycron
+fi
+}
+#----------------------------------------------------------------------------#
+#function to Inspect files in $bin
+function Inspect() {
+ Read_rbinrc
+ if [[ "$switch" == "ON" ]];then
+    list=`ls $bin`
+    #echo $list
+    for file in $list;do
+       del_date=`grep " $file:" $cache|cut -d ":" -f 3`
+       cur_date=`date +%s`
+       days=$(((cur_date - del_date)/86400))
+       if [[ "$days" > "$expiry" ]];then
+          rm -rf $bin/$file   
+       else
+       echo "Days were less" 
+       fi
+    done
+ fi
 }
 #----------------------------------------------------------------------------#
 function print_help() {
@@ -192,6 +319,9 @@ cat <<EOF
     rbin -e             ---> Makes recyclebin empty.
     rbin anji_*         ---> Deletes all files starts with anji_
     rbin file1 file2 dir1 ---> Deletes file1 file2 dir1 
+    rbin file_[1-3]*    ---> Deletes starts with file_1* file_2* file_3*
+    
+    rbin works perfectly with wildcards like *, [1-5], String*, etc. 
 
  Cheers!
  Anji Babu
@@ -213,8 +343,6 @@ if [[ "$1" != "" ]];then
          EmptyBin ;;
         -r|--restore|--res)
          Restore $2;;
-        --SetAutoclean|--autoclean|--SAC)
-         echo "Set the Auto clean settings.Yet to implement." ;;
         -f|--force)
          Remove_Perminant $2;;
         *)
@@ -225,8 +353,8 @@ if [[ "$1" != "" ]];then
      case "$1" in
         -h|--help) print_help;;
         -e|--empty|--emptybin)EmptyBin ;;
-        --SetAutoclean|--autoclean|--SAC)
-         echo "Set the Auto clean settings.Yet to implement." ;;
+        --SetAutoclean|--SAC|-s)
+          set_Autoclean;;
         -d|--del|--delete)
           if [[ "$narg" -lt "2" ]];then
              echo "Expected Argument with -d tag." 
@@ -242,6 +370,8 @@ if [[ "$1" != "" ]];then
             echo "Expected Argument with -f tag." 
           fi
           ;;
+        --autoclean|--inspect|-ac)
+          Inspect;;
         *) delete $1 ;;
      esac
    fi
@@ -276,7 +406,7 @@ if [[ "$1" != "" ]];then
   fi
 #<--- Arg
 else
-     echo " Argument epected.!"
+     echo " Argument expected.!"
      echo " See rbin --help "
 fi
 
