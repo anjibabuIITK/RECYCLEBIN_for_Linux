@@ -21,12 +21,13 @@
 
  **Features:**
     
-    rbin                 ---> main excutable and deletes given files
-    rbin -d/--del        ---> Deletes the files or Directories
-    rbin -r/--restore    ---> Restores the given files.
-    rbin -e/--emptybin   ---> Will empty the recyclebin
-    rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
-    rbin -h/--help       ---> Prints the information about rbin.
+    rbin                    ---> main excutable and deletes given files
+    rbin -d/--del           ---> Deletes the files or Directories
+    rbin -r/--restore       ---> Restores the given files.
+    rbin -e/--emptybin      ---> Will empty the recyclebin
+    rbin -s/--SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
+    rbin -h/--help          ---> Prints the information about rbin.
+    rbin -f                 ---> Removes the given files permenantly.
     
 
  **Directories:**
