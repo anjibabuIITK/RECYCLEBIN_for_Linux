@@ -24,13 +24,23 @@
     rbin -e/--emptybin   ---> Will empty the recyclebin
     rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
     rbin -h/--help       ---> Prints the information about rbin.
+    
 
  **Directories:**
        
     /home/user/recyclebin          ---> Place to store the deleted files
     /home/user/recyclebin/.cache   ---> Contains the information about deleted files 
 	                                    		(date of deletion & original location)
-
+ **Examples:**
+ 
+    rbin *    : Deletes all files from current directory.
+    rbin -r * : Restores all files from recyclebin.
+    rbin -f * : Removes all files perminantly from current directory.
+    rbin file1 : Deletes the file1
+    rbin -r file1: Restore the file1
+    rbin -e   : Makes recyclebin empty.
+    rbin anji_* : Deletes all files starts with anji_
+    
 # <==============================>
 **Cheers!**
 
