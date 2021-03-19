@@ -6,9 +6,11 @@
     Anji Babu Kapakayala
 	  IIT Kanpur, India.
 
+**Report Bug s:**    anjibabu480@gmail.com
+
 **Laungauge:** Shell/Bash
 
-**Install**:    
+**Installation**:    
 
  -  Download the executable rbin
  -  Change the permissions (chmod 777 rbin)
