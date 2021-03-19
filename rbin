@@ -10,12 +10,13 @@
 #
 # Laungauge: Shell/bash
 #
+#
 # Installation:
 #
-#    1. Download the executable (rbin)
-#    2. Change the permissions (chmod 777 rbin)
-#    3. Move to /usr/bin
-#    4. rbin -h [ for details ]
+#      Download the executable rbin
+#      Change the permissions (chmod 777 rbin)
+#      Move to /usr/bin
+#      rbin -h [ for details ]
 #
 # Description: 
 #	
@@ -32,6 +33,7 @@
 #       rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
 #       rbin -h/--help       ---> Prints the information about rbin.
 #       rbin -f/--force      ---> Deletes the given file perminantly
+#       rbin -l/--list       ---> Lists the contents in Recyclebin along with the age from the day of deletion.
 #
 #
 # Directories:
@@ -286,6 +288,37 @@ function Inspect() {
  fi
 }
 #----------------------------------------------------------------------------#
+#function to Print the contents in $bin with Age
+function listContents() {
+   current_dir=`pwd`
+  if [[ "$current_dir" == "$bin" ]];then
+  list=`ls $bin`
+   for file in $list;do
+   del_date=`grep " $file:" $cache|cut -d ":" -f 3`
+   cur_date=`date +%s`
+#
+#--->
+   days=$(((cur_date - del_date)/86400))
+   hrs=$(((cur_date - del_date)/3600))
+   mnts=$(((cur_date - del_date)/60))
+   sec=$((cur_date - del_date))
+#<---
+
+   if [[ "$days" < "1" ]];then
+      if [[ "$hrs" < "1" ]];then
+         echo "$bold[$red $mnts Min $rst$bold] $file $rst"
+      else
+         echo "$bold[$red $hrs Hrs $rst$bold] $file $rst"
+      fi
+   else
+         echo "$bold[$red $days Days $rst$bold] $file $rst"
+   fi
+   done
+ else
+    echo "$bold$red rbin$rst$bold: --->$ylw The current direcory is NOT a Recyclebin.$rst"
+ fi
+}
+#----------------------------------------------------------------------------#
 function print_help() {
 cat <<EOF
 -----------------------------------------------------------------------------
@@ -313,6 +346,8 @@ cat <<EOF
     rbin --SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
     rbin -h/--help       ---> Prints the information about rbin.
     rbin -f/--force      ---> Deletes the given file perminantly
+    rbin -l/--list       ---> Lists the contents in Recyclebin along with 
+                              the age from the day of deletion.
 
 
  Directories:
@@ -366,6 +401,7 @@ if [[ "$1" != "" ]];then
      esac
    else
      case "$1" in
+        -l|--list)listContents;;
         -h|--help) print_help;;
         -e|--empty|--emptybin)EmptyBin ;;
         --SetAutoclean|--SAC|-s)
