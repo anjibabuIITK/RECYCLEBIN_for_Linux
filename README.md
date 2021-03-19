@@ -10,7 +10,10 @@
 
 **Install**:    
 
-    Place rbin in /usr/bin to be used as executble.
+    - Download the executable rbin
+    - Change the permissions (chmod 777 rbin)
+    - move to /usr/bin 
+    - rbin -h [ for details ]
 
  **Description:** 
 	
