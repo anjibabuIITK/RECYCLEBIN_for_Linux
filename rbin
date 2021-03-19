@@ -10,6 +10,13 @@
 #
 # Laungauge: Shell/bash
 #
+# Installation:
+#
+#    1. Download the executable (rbin)
+#    2. Change the permissions (chmod 777 rbin)
+#    3. Move to /usr/bin
+#    4. rbin -h [ for details ]
+#
 # Description: 
 #	
 #	RBIN is a software which acts as a RECYCLEBIN" to delete and restore the files in Linux.
