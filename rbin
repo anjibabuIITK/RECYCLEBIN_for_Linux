@@ -178,6 +178,8 @@ read -p "$bold$ylw Activate Autoclean [$rst$bold ON/OFF$ylw] :$rst" option
      Set_Crontab
    else
      switch="OFF"
+  echo "$bold$red rbin$rst$bold: --->$grn Autoclean feature is remains deactivated.$rst"
+   exit
    fi
 read -p "$bold$ylw Set Expiry Days for Auto Deletion [$rst$bold$red in Days$rst$bold] :$rst" ndays
    if [[ "$ndays" != "" ]];then
@@ -193,6 +195,7 @@ cat >$rbinrc<<EOF
  EXPIRY_DAYS=$ndays
 EOF
    fi
+  echo "$bold$red rbin$rst$bold: --->$grn Autoclean feature is activated.$rst"
 #<---when off
 else
 #---> when on
@@ -204,12 +207,15 @@ read -p "$bold$ylw Deactivate Autoclean [$rst$bold ON/OFF$ylw] :$rst" option
      Remove_Crontab
    else
      switch="ON"
+  echo "$bold$red rbin$rst$bold: --->$grn Autoclean feature is remains activated.$rst"
+  exit
    fi
 
 cat >$rbinrc<<EOF
  AUTO_CLEAN=$switch
  EXPIRY_DAYS=$ndays
 EOF
+ echo "$bold$red rbin$rst$bold: --->$grn Autoclean feature is deactivated.$rst"
 #<--- When on
 fi
 }
