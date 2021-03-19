@@ -34,7 +34,9 @@
     rbin -e/--emptybin      ---> Will empty the recyclebin
     rbin -s/--SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
     rbin -h/--help          ---> Prints the information about rbin.
-    rbin -f                 ---> Removes the given files permenantly.
+    rbin -f/--force         ---> Removes the given files permenantly.
+    rbin -l/--list          ---> Lists the files in recycle-bin along with their Age
+    			         from the time of delition.
     
 
  **Directories:**
