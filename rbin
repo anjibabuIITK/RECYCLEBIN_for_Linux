@@ -51,7 +51,7 @@ rbinrc="$HOME/.rbinrc"
 if [ ! -d "$bin" ]; then
 # echo "$bin exist."
 #else
- echo "$bin Created."
+ echo "$bold$grn $bin $rst$bold Created.$rst"
  mkdir -p $bin
  touch $cache $rbinrc
  cat >>$rbinrc<<EOF
@@ -71,7 +71,7 @@ if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
    mv  $1 $bin
 
 else
-   echo "rbin: ---> $1 not found."
+   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold not found.$rst"
 fi
 }
 #----------------------------------------------------------------------------#
@@ -90,9 +90,9 @@ if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
 #    fi
   fi
 #<---
-echo "$1 has deleted perminantly." 
+   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold has deleted perminantly.$rst"
 else
-   echo "rbin: ---> $1 not found."
+   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold not found.$rst"
 fi
 }
 #----------------------------------------------------------------------------#
@@ -101,16 +101,16 @@ function EmptyBin() {
   current_dir=`pwd`
 #--->
  if [[ "$current_dir" == "$bin" ]];then
-    read -p "Are you sure want to empty the Recyclebin [y/n] ? : " option
+    read -p "$bold$red Are you sure want to empty the Recyclebin [$rst$bold y/n $rst$red] ? :$rst " option
     if [[ "$option" == "y" ]];then 
     rm -rf *
     rm $cache
-    echo " Recyclebin is empty."
+    echo "$bold$red rbin$rst$bold: --->$ylw Recyclebin is empty.$rst"
     else
-    echo " Recyclebin is not empty."
+    echo "$bold$red rbin$rst$bold: --->$ylw Recyclebin is NOT empty.$rst"
     fi
  else
-    echo " The current direcory is not Recyclebin."
+    echo "$bold$red rbin$rst$bold: --->$ylw The current direcory is NOT a Recyclebin.$rst"
  fi
 }
 #----------------------------------------------------------------------------#
@@ -127,12 +127,13 @@ if [[ "$current_dir" == "$bin" ]];then
       if [ "$?" == "0" ];then
       sed -i "/$1:/d" $cache
       fi
-      echo "rbin: [restored] $file ------>  $original_path"
+#      echo "rbin: [restored] $file ------>  $original_path"
+      echo "$bold$red rbin$rst$bold:[$grn Restored $rst]$bold $file          ---> $original_path $rst"
    else
-   echo "$1 not found."
+   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold not found.$rst"
    fi
 else
-   echo " The current direcory is not Recyclebin."
+    echo "$bold$red rbin$rst$bold: --->$ylw The current direcory is NOT a Recyclebin.$rst"
 fi
 }
 #----------------------------------------------------------------------------#
@@ -140,7 +141,7 @@ fi
 function UpdateCache() {
 file=$1
 path=`pwd`
-date=`date +%s -r "$file"`
+date=`date +%s`
 cat >>$cache<<EOF
  $1: $path:$date
 EOF
@@ -169,16 +170,16 @@ function set_Autoclean() {
 Read_rbinrc
  if [[ "$switch" == "OFF" ]];then
 #---> when off
-echo " Autoclean status is OFF."
+echo "$bold Autoclean status is $ylw OFF.$rst"
 echo ""
-read -p "Set Autoclean [ON/OFF] :" option
+read -p "$bold$ylw Activate Autoclean [$rst$bold ON/OFF$ylw] :$rst" option
    if [[ "$option" == "ON" ]];then
      switch="ON"
      Set_Crontab
    else
      switch="OFF"
    fi
-read -p "Set Expiry Days for Auto Deletion [in Days] :" ndays
+read -p "$bold$ylw Set Expiry Days for Auto Deletion [$rst$bold$red in Days$rst$bold] :$rst" ndays
    if [[ "$ndays" != "" ]];then
 
 cat >$rbinrc<<EOF
@@ -195,9 +196,9 @@ EOF
 #<---when off
 else
 #---> when on
-echo " Autoclean status is ON."
+echo "$bold Autoclean status is $ylw ON.$rst"
 echo ""
-read -p "Deactivate Autoclean [ON/OFF] :" option
+read -p "$bold$ylw Deactivate Autoclean [$rst$bold ON/OFF$ylw] :$rst" option
    if [[ "$option" == "OFF" ]];then
      switch="OFF"
      Remove_Crontab
@@ -267,8 +268,6 @@ function Inspect() {
        days=$(((cur_date - del_date)/86400))
        if [[ "$days" > "$expiry" ]];then
           rm -rf $bin/$file   
-       else
-       echo "Days were less" 
        fi
     done
  fi
@@ -360,17 +359,17 @@ if [[ "$1" != "" ]];then
           set_Autoclean;;
         -d|--del|--delete)
           if [[ "$narg" -lt "2" ]];then
-             echo "Expected Argument with -d tag." 
+             echo "$bold$red rbin$rst$bold: --->$ylw Expected Argument with -d tag.$rst"
           fi
           ;;
         -r|--restore|--res)
           if [[ $narg -lt 2 ]];then
-            echo "Expected Argument with -r tag." 
+             echo "$bold$red rbin$rst$bold: --->$ylw Expected Argument with -r tag.$rst"
           fi
           ;;
         -f|--force)
           if [[ "$narg" -lt "2" ]];then
-            echo "Expected Argument with -f tag." 
+             echo "$bold$red rbin$rst$bold: --->$ylw Expected Argument with -f tag.$rst"
           fi
           ;;
         --autoclean|--inspect|-ac)
@@ -380,8 +379,8 @@ if [[ "$1" != "" ]];then
    fi
 #<--- $2 close
 else
-     echo " Argument epected.!"
-     echo " See rbin --help "
+     echo "$bold$red rbin$rst$bold: Argument expected.!$rst"
+     echo "$bold See $grn  rbin --help $rst"
 fi
 }
 #----------------------------------------------------------------------------#
@@ -409,8 +408,8 @@ if [[ "$1" != "" ]];then
   fi
 #<--- Arg
 else
-     echo " Argument expected.!"
-     echo " See rbin --help "
+     echo "$bold$red rbin$rst$bold: Argument expected.!$rst"
+     echo "$bold See $grn  rbin --help $rst"
 fi
 
 #----------------------------------------------------------------------------#
