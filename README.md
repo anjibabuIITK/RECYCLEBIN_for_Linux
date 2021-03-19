@@ -6,7 +6,9 @@
     Anji Babu Kapakayala
 	  IIT Kanpur, India.
 
-**Report Bug s:**    anjibabu480@gmail.com
+**Report Bugs:** 
+
+    anjibabu480@gmail.com
 
 **Laungauge:** Shell/Bash
 
