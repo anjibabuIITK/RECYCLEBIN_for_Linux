@@ -290,8 +290,10 @@ function Inspect() {
 #----------------------------------------------------------------------------#
 #function to Print the contents in $bin with Age
 function listContents() {
+ Read_rbinrc
+
    current_dir=`pwd`
-  if [[ "$current_dir" == "$bin" ]];then
+if [[ "$current_dir" == "$bin" ]];then
   list=`ls $bin`
    for file in $list;do
    del_date=`grep " $file:" $cache|cut -d ":" -f 3`
@@ -303,17 +305,30 @@ function listContents() {
    mnts=$(((cur_date - del_date)/60))
    sec=$((cur_date - del_date))
 #<---
+totallefthrs=$((expiry*24 - hrs))
+leftdays=$((totallefthrs/24))
+lefthrs=$((totallefthrs%24))
+#--->
+if [[ "$switch" == "ON" ]];then
+    echo "$bold[$red Delete in$rst$grn $leftdays $rst$red Days$rst$grn $lefthrs $rst$red Hrs $rst$bold]$rst $file"
+else
 
    if [[ "$days" < "1" ]];then
       if [[ "$hrs" < "1" ]];then
-         echo "$bold[$red $mnts Min $rst$bold] $file $rst"
+         if [[ "$switch" == "ON" ]];then
+           echo "$bold[$red $mnts Min $rst$bold] $file $rst"
+         else
+           echo "$bold[$red $mnts Min $rst$bold] $file $rst"
+         fi
       else
          echo "$bold[$red $hrs Hrs $rst$bold] $file $rst"
       fi
    else
          echo "$bold[$red $days Days $rst$bold] $file $rst"
    fi
+fi
    done
+#<---
  else
     echo "$bold$red rbin$rst$bold: --->$ylw The current direcory is NOT a Recyclebin.$rst"
  fi
