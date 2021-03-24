@@ -252,7 +252,8 @@ function Set_Crontab() {
 #write out current crontab
 crontab -l > mycron
 #echo new cron into cron file
-echo "0 0 * * * rbin --autoclean" >> mycron
+path=`which rbin`
+echo "0 0 * * * bash $path --autoclean" >> mycron
 #install new cron file
 crontab mycron
 rm mycron
@@ -262,7 +263,7 @@ rm mycron
 function Remove_Crontab() {
 crontab -l > mycron
 #echo new cron into cron file
-a=`grep "rbin --autoclean" mycron`
+a=`grep "--autoclean" mycron`
 if [ "$?" == "0" ];then
 sed -i "/rbin --autoclean/d" mycron
 #install new cron file
@@ -365,6 +366,7 @@ cat <<EOF
     rbin -f/--force      ---> Deletes the given file perminantly
     rbin -l/--list       ---> Lists the contents in Recyclebin along with 
                               the age from the day of deletion.
+    rbin -v/--version    ---> Prints the current version of the package.
 
 
  Directories:
@@ -419,6 +421,7 @@ if [[ "$1" != "" ]];then
    else
      case "$1" in
         -l|--list)listContents;;
+        -v|--version)echo "$bold$grn Version: 1.0 $rst";;
         -h|--help) print_help;;
         -e|--empty|--emptybin)EmptyBin ;;
         --SetAutoclean|--SAC|-s)
