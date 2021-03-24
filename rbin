@@ -284,6 +284,9 @@ function Inspect() {
        days=$(((cur_date - del_date)/86400))
        if [ $days -ge $expiry ];then
           rm -rf $bin/$file   
+          if [ "$?" == "0" ];then
+            sed -i "/$file:/d" $cache
+          fi
        fi
     done
  fi
