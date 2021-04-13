@@ -35,13 +35,16 @@
     rbin -s/--SetAutoclean  ---> Options: on , off, Period_of_days to clean the bin
     rbin -h/--help          ---> Prints the information about rbin.
     rbin -f/--force         ---> Removes the given files permenantly.
+    rbin -v/--version       ---> Prints the current version of the program.
     rbin -l/--list          ---> Lists the files in recycle-bin along with their Age
     			         from the time of delition.
+				 
     
 
  **Directories:**
        
     /home/user/recyclebin          ---> Place to store the deleted files
+    /home/user/recyclebin/.log     ---> Writes output of Auto cleaning feature
     /home/user/recyclebin/.cache   ---> Contains the information about deleted files 
 	                                    		(date of deletion & original location)
  **Examples:**
