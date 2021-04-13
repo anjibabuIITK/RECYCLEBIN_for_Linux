@@ -55,6 +55,7 @@ bold=`tput bold`
 #----------------------------------------------------------------------------#
 bin="$HOME/recyclebin"
 cache="$HOME/recyclebin/.cache"
+log="$HOME/recyclebin/.log"
 rbinrc="$HOME/.rbinrc"
 # if $bin doesn't exist, create
 if [ ! -d "$bin" ]; then
@@ -71,16 +72,17 @@ fi
 #----------------------------------------------------------------------------#
 # Function to move files to recyclebin
 function delete() {
-if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
-   if [[ ( -f "$bin/$1" ) || ( -d "$bin/$1" ) ]]; then
-   mv $bin/$1 $bin/$1.old
-   sed -i "s/$1:/$1.old:/g" $cache
+file=`echo "$1"|cut -d "/" -f1`
+if [[ ( -f "$file" ) || ( -d "$file" ) ]]; then
+   if [[ ( -f "$bin/$file" ) || ( -d "$bin/$file" ) ]]; then
+   mv $bin/$file $bin/$file.old
+   sed -i "s/$file:/$file.old:/g" $cache
    fi
-   UpdateCache $1
-   mv  $1 $bin
+   UpdateCache $file
+   mv  $file $bin
 
 else
-   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold not found.$rst"
+   echo "$bold$red rbin$rst$bold: --->$ylw $file$rst$bold not found.$rst"
 fi
 }
 #----------------------------------------------------------------------------#
@@ -126,20 +128,20 @@ function EmptyBin() {
 # Function to restore the deleted files from recyclebin.
 function Restore() {
    current_dir=`pwd`
-   file=$1
+   file=`echo "$1"|cut -d "/" -f1`
    original_path=`grep " $file:" $cache|cut -d ":" -f 2`
 #--->
 if [[ "$current_dir" == "$bin" ]];then
 
-   if [[ ( -f "$1" ) || ( -d "$1" ) ]]; then
+   if [[ ( -f "$file" ) || ( -d "$file" ) ]]; then
       mv $bin/$file $original_path
       if [ "$?" == "0" ];then
-      sed -i "/$1:/d" $cache
+      sed -i "/$file:/d" $cache
       fi
 #      echo "rbin: [restored] $file ------>  $original_path"
       echo "$bold$red rbin$rst$bold:[$grn Restored $rst]$bold $file          ---> $original_path $rst"
    else
-   echo "$bold$red rbin$rst$bold: --->$ylw $1$rst$bold not found.$rst"
+   echo "$bold$red rbin$rst$bold: --->$ylw $file$rst$bold not found.$rst"
    fi
 else
     echo "$bold$red rbin$rst$bold: --->$ylw The current direcory is NOT a Recyclebin.$rst"
@@ -257,6 +259,7 @@ echo "0 0 * * * bash $path --autoclean" >> mycron
 #install new cron file
 crontab mycron
 rm mycron
+echo "rbin:---> Activated Autoclean at $now ." >>$log
 }
 #----------------------------------------------------------------------------#
 # Function to remove crontab
@@ -265,10 +268,11 @@ crontab -l > mycron
 #echo new cron into cron file
 a=`grep "--autoclean" mycron`
 if [ "$?" == "0" ];then
-sed -i "/rbin --autoclean/d" mycron
+sed -i "/--autoclean/d" mycron
 #install new cron file
 crontab mycron
 rm mycron
+echo "rbin:---> Deactivated Autoclean at $now ." >>$log
 fi
 }
 #----------------------------------------------------------------------------#
@@ -291,7 +295,7 @@ function Inspect() {
     done
  fi
 now=`date`
-echo "rbin:---> $now inspcted." >>$HOME/rbin.log
+echo "rbin:---> $now inspcted." >>$log
 }
 #----------------------------------------------------------------------------#
 #function to Print the contents in $bin with Age
