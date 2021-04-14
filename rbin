@@ -73,10 +73,11 @@ fi
 # Function to move files to recyclebin
 function delete() {
 file=`echo "$1"|cut -d "/" -f1`
+tag=$RANDOM
 if [[ ( -f "$file" ) || ( -d "$file" ) ]]; then
    if [[ ( -f "$bin/$file" ) || ( -d "$bin/$file" ) ]]; then
-   mv $bin/$file $bin/$file.old
-   sed -i "s/$file:/$file.old:/g" $cache
+   mv $bin/$file $bin/$file.$tag
+   sed -i "s/$file:/$file.$tag:/g" $cache
    fi
    UpdateCache $file
    mv  $file $bin
